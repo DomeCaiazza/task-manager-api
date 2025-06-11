@@ -1,0 +1,32 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: task_manager_development
+      MYSQL_USER: task_manager
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  web-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: mysql2://task_manager:password@db:3306/task_manager_development
+      RAILS_ENV: development
+    depends_on:
+      - db
+
+volumes:
+  mysql_data:
+  bundle_cache: 
