@@ -1,15 +1,43 @@
 services:
-  db:
+  db-dev:
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: task_manager_development
-      MYSQL_USER: task_manager
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE_DEV}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PORT: ${MYSQL_PORT}
     ports:
-      - "3306:3306"
+      - "3306:${MYSQL_PORT}"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  db-test:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE_TEST}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PORT: ${MYSQL_PORT}
+    ports:
+      - "3307:${MYSQL_PORT}"
+    tmpfs:
+      - /var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
 
   web-dev:
     build:
@@ -22,10 +50,26 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: mysql2://task_manager:password@db:3306/task_manager_development
-      RAILS_ENV: development
+      MYSQL_DATABASE_DEV: ${MYSQL_DATABASE_DEV}
+      MYSQL_HOST_DEV: ${MYSQL_HOST_DEV}
+      MYSQL_DATABASE_TEST: ${MYSQL_DATABASE_TEST}
+      MYSQL_HOST_TEST: ${MYSQL_HOST_TEST}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
     depends_on:
-      - db
+      db-dev:
+        condition: service_healthy
+      db-test:
+        condition: service_healthy
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
 
 volumes:
   mysql_data:
