@@ -1,9 +1,11 @@
 class ApiController < ApplicationController
     skip_before_action :verify_authenticity_token
 
-    rescue_from StandardError, with: :handle_error
-    rescue_from ActiveRecord::RecordNotFound, with: :handle_not_found
-    rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
+    if !Rails.env.development?
+      rescue_from StandardError, with: :handle_error
+      rescue_from ActiveRecord::RecordNotFound, with: :handle_not_found
+      rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
+    end
 
     private
 
@@ -33,4 +35,4 @@ class ApiController < ApplicationController
         }
       }, status: :bad_request
     end
-  end
+end

@@ -33,7 +33,7 @@ RSpec.describe User, type: :model do
     it 'has many tasks' do
       user = create(:user)
       expect(user.tasks).to be_empty
-      
+
       task = create(:task, user: user)
       expect(user.tasks).to include(task)
     end
@@ -41,7 +41,7 @@ RSpec.describe User, type: :model do
     it 'destroys associated tasks when deleted' do
       user = create(:user)
       task = create(:task, user: user)
-      
+
       expect {
         user.destroy
       }.to change(Task, :count).by(-1)

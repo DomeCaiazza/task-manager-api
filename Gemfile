@@ -19,8 +19,8 @@ gem "jbuilder"
 # Pagination gem [https://github.com/kaminari/kaminari]
 gem "kaminari"
 
-gem 'devise'
-gem 'devise-api'
+gem "devise"
+gem "devise-api"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
@@ -52,6 +52,8 @@ group :development, :test do
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
 
+  gem "ransack"
+
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
@@ -67,7 +69,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
-  
+
   # RSpec for testing
   gem "factory_bot_rails"
   gem "faker"
