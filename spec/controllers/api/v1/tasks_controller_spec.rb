@@ -24,6 +24,34 @@ RSpec.describe Api::V1::TasksController, type: :controller do
       expect(JSON.parse(response.body)['tasks'].length).to eq(2)
       expect(JSON.parse(response.body)['meta']['total_count']).to eq(3)
     end
+
+    it 'returns tasks filtered by title' do
+      create(:task, user: user, title: "I want to be filtered")
+      create_list(:task, 3, user: user, title: "Test Task")
+      get :index, params: { q: { title_cont: "I want to be filtered" } }
+      expect(JSON.parse(response.body)['tasks'].length).to eq(1)
+    end
+
+    it 'returns tasks filtered by completed' do
+      create_list(:task, 3, user: user, completed: true)
+      create_list(:task, 3, user: user, completed: false)
+      get :index, params: { q: { completed_eq: true } }
+      expect(JSON.parse(response.body)['tasks'].length).to eq(3)
+    end
+
+    it 'returns tasks filtered by title and description by title' do
+      create(:task, user: user, title: "I want to be filtered", description: "description")
+      create_list(:task, 3, user: user, title: "Test Task", description: "Test Description")
+      get :index, params: { q: { title_or_description_cont: "I want to be filtered" } }
+      expect(JSON.parse(response.body)['tasks'].length).to eq(1)
+    end
+
+    it 'returns tasks filtered by title and description by description' do
+      create(:task, user: user, title: "title", description: "I want to be filtered")
+      create_list(:task, 3, user: user, title: "Test Task", description: "Test Description")
+      get :index, params: { q: { title_or_description_cont: "I want to be filtered" } }
+      expect(JSON.parse(response.body)['tasks'].length).to eq(1)
+    end
   end
 
   describe 'GET #show' do

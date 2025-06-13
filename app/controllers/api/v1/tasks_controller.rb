@@ -6,7 +6,10 @@ module Api
         before_action :set_task, only: [ :show, :update, :destroy ]
 
         def index
-            @tasks = @user.tasks.page(params[:page]).per(params[:per_page])
+            params[:q] ||= {}
+            params[:q][:s] ||= [ "id desc" ]
+            @q = @user.tasks.ransack(params[:q])
+            @tasks = @q.result.page(params[:page]).per(params[:per_page])
             render json: {
                 tasks: @tasks,
                 meta: {
