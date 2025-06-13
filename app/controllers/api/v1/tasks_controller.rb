@@ -1,9 +1,9 @@
 module Api
   module V1
     class TasksController < ApiController
+        before_action :authenticate_devise_api_token!
         before_action :set_user
-        before_action :set_task, only: [:show, :update, :destroy]
-        before_action :authorize_user, only: [:show, :update, :destroy]
+        before_action :set_task, only: [ :show, :update, :destroy ]
 
         def index
             @tasks = @user.tasks.page(params[:page]).per(params[:per_page])
@@ -46,21 +46,11 @@ module Api
         private
 
         def set_user
-            @user = User.find(params[:user_id])
-        rescue ActiveRecord::RecordNotFound
-            render json: { error: 'User not found' }, status: :not_found
+            @user = current_devise_api_user
         end
 
         def set_task
             @task = @user.tasks.find(params[:id])
-        rescue ActiveRecord::RecordNotFound
-            render json: { error: 'Task not found' }, status: :not_found
-        end
-
-        def authorize_user
-            unless @task.user_id == current_user.id
-                render json: { error: 'Unauthorized' }, status: :unauthorized
-            end
         end
 
         def task_params

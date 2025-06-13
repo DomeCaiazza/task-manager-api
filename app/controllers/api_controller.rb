@@ -34,4 +34,3 @@ class ApiController < ApplicationController
       }, status: :bad_request
     end
   end
-  
