@@ -1,7 +1,8 @@
 FactoryBot.define do
     factory :task do
-        title { "Task #{Faker::Lorem.word}" }
-        description { Faker::Lorem.sentence }
+        title { Faker::Lorem.sentence }
+        description { Faker::Lorem.paragraph }
         completed { false }
+        association :user
     end
 end

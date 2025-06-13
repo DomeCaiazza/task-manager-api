@@ -19,6 +19,9 @@ gem "jbuilder"
 # Pagination gem [https://github.com/kaminari/kaminari]
 gem "kaminari"
 
+gem 'devise'
+gem 'devise-api'
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 

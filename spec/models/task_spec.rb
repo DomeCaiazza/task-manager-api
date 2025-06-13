@@ -1,14 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe Task, type: :model do
+  let(:user) { create(:user) }
+
   describe 'validations' do
     it 'is valid with a title' do
-      task = Task.new(title: 'Test Task')
+      task = user.tasks.build(title: 'Test Task')
       expect(task).to be_valid
     end
 
     it 'is invalid without a title' do
-      task = Task.new(title: nil)
+      task = user.tasks.build(title: nil)
       expect(task).not_to be_valid
       expect(task.errors[:title]).to include("can't be blank")
     end
