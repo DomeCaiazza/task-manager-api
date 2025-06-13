@@ -76,7 +76,8 @@ Questa documentazione fornisce una descrizione di tutti gli endpoint disponibili
 ## Struttura dell'API
 
 ### Postman
-Per testare l'utilizzo di questa applicazione importare nel proprio postman il file `task-manager-api.postman_collection.json`
+Per testare l'utilizzo di questa applicazione importare nel proprio postman il file https://raw.githubusercontent.com/DomeCaiazza/task-manager-api/refs/heads/main/task-manager-api.postman_collection.json
+
 #### Autenticazione per le chiamate
 Nella collection "task-manager-api", è definita la variabile "token" che va popolata con il token di risposta, dopo l'autenticazione, della rotta `/users/tokens/sign_in`
 
