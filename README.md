@@ -22,6 +22,7 @@ MYSQL_PASSWORD=your_password # password dell'utente mysql
 MYSQL_HOST_DEV=db-dev # host per l'ambiente di sviluppo
 MYSQL_HOST_TEST=db-test # host per l'ambiente di test
 MYSQL_PORT=3306 # porta servizio database (nella rete docker)
+RAILS_MASTER_KEY="6d93e4e8e4ec7e2d1b4128651a19d619" # Master key per l'applicazione, questa è una chiave di esempio, genera una nuova chiave per ambienti non di test
 ```
 
 ### Installazione con Docker
@@ -32,19 +33,20 @@ git clone git@github.com:DomeCaiazza/task-manager-api.git
 cd task-manager-api
 ```
 
-2. Avvia i container Docker:
+2. Creare il file di variabili d'ambiente `.env` come mostrato sopra
+
+3. Avvia i container Docker:
 ```bash
 docker-compose up --build -d && docker-compose logs -tf
 ```
 
-3. (Opzionale) In un nuovo terminale, esegui le migrazioni del database:
+4. (Opzionale) In un nuovo terminale, esegui le migrazioni del database:
 PS: la creazione e la migrazione del database viene eseguita automaticamente dal file "entrypoint.dev.sh"
 ```bash
 docker-compose exec web-dev bundle exec rails db:create db:migrate
 ```
 
-
-4. (Opzionale) Popola il database con dati di esempio:
+5. (Opzionale) Popola il database con dati di esempio:
 ```bash
 docker-compose exec web-dev bundle exec rails db:seed
 ```
@@ -81,6 +83,13 @@ docker-compose exec web-dev bundle exec rspec
 - `description` (text)
 - `completed` (boolean)
 
+### Filtri
+L'endoint per la lista dei task permette di filtrare i risultati per tutti i suoi parametri, i filtri disponibili sono:
+- completed_eq: il completameto è uguale a "true" o "false"
+- title_cont: il titolo contiene
+- description_cont: la descrizione contiene
+- title_or_description_cont: titolo o descrizione contiene
+
 ## Sviluppo
 
 ### Struttura del Progetto
@@ -108,6 +117,11 @@ docker-compose exec web-dev bundle exec rails console
 - Controllare i log di docker compose in tempo reale:
 ```bash
 docker-compose logs -tf
+```
+
+- Generare la documentazione open api
+```bash
+docker-compose exec web-dev rake rswag:specs:swaggerize
 ```
 
 ## Sicurezza

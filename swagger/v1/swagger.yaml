@@ -1,0 +1,259 @@
+---
+openapi: 3.0.1
+info:
+  title: Task Manager API V1
+  version: v1
+  description: A RESTful API for task management, developed with Ruby on Rails, that
+    allows each user to manage their tasks independently.
+paths:
+  "/api/v1/tasks":
+    get:
+      summary: List tasks
+      tags:
+      - Tasks
+      description: Retrieve a paginated list of tasks. Supports filtering and sorting
+        by various fields. Requires Bearer token authentication.
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: page
+        in: query
+        description: Page number
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items per page
+        schema:
+          type: integer
+      - name: q[title_cont]
+        in: query
+        description: Filter by title containing
+        schema:
+          type: string
+      - name: q[description_cont]
+        in: query
+        description: Filter by description containing
+        schema:
+          type: string
+      - name: q[title_or_description_cont]
+        in: query
+        description: Filter by title or description containing
+        schema:
+          type: string
+      - name: q[completed_eq]
+        in: query
+        description: Filter by completion status
+        example:
+        - 'true'
+        - 'false'
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Tasks list retrieved successfully
+        '401':
+          description: Unauthorized - Bearer token is required
+        '404':
+          description: Not found
+    post:
+      summary: Create a new task
+      tags:
+      - Tasks
+      description: Add a new task for user. Requires Bearer token authentication.
+      security:
+      - bearer_auth: []
+      parameters: []
+      responses:
+        '201':
+          description: Task created successfully
+        '422':
+          description: Invalid task
+        '401':
+          description: Unauthorized - Bearer token is required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    completed:
+                      type: boolean
+                  required:
+                  - title
+  "/api/v1/tasks/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Retrieve a specific task
+      tags:
+      - Tasks
+      description: Get details of a specific task. Requires Bearer token authentication.
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: Task found
+        '404':
+          description: Task not found
+        '401':
+          description: Unauthorized - Bearer token is required
+    put:
+      summary: Update a task
+      tags:
+      - Tasks
+      description: Modify an existent task. Requires Bearer token authentication.
+      security:
+      - bearer_auth: []
+      parameters: []
+      responses:
+        '200':
+          description: Task updated successfully
+        '422':
+          description: Invalid task
+        '404':
+          description: Task not found
+        '401':
+          description: Unauthorized - Bearer token is required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    completed:
+                      type: boolean
+    delete:
+      summary: Delete a task
+      tags:
+      - Tasks
+      description: Delete a task. Requires Bearer token authentication.
+      security:
+      - bearer_auth: []
+      responses:
+        '204':
+          description: Task deleted successfully
+        '404':
+          description: Task not found
+        '401':
+          description: Unauthorized - Bearer token is required
+  "/users/tokens/sign_up":
+    post:
+      summary: Register a new user
+      tags:
+      - Users
+      description: Create a new user account
+      parameters: []
+      responses:
+        '200':
+          description: User registered successfully
+        '422':
+          description: Invalid user data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                    password:
+                      type: string
+                      format: password
+                  required:
+                  - email
+                  - password
+  "/users/tokens/sign_in":
+    post:
+      summary: Sign in user
+      tags:
+      - Users
+      description: Authenticate user and return access token
+      parameters: []
+      responses:
+        '200':
+          description: User signed in successfully
+        '401':
+          description: Invalid credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                    password:
+                      type: string
+                      format: password
+                  required:
+                  - email
+                  - password
+  "/users/tokens/revoke":
+    post:
+      summary: Sign out user
+      tags:
+      - Users
+      description: Revoke user access token
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: User signed out successfully
+        '401':
+          description: Unauthorized
+  "/users/tokens/info":
+    get:
+      summary: Get user info
+      tags:
+      - Users
+      description: Retrieve current user information
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: User info retrieved successfully
+          content:
+            application/json:
+              examples:
+                example_0:
+                  value:
+                    id: 1
+                    email: user@example.com
+                    created_at: '2024-03-20T10:00:00Z'
+                    updated_at: '2024-03-20T10:00:00Z'
+        '401':
+          description: Unauthorized
+components:
+  securitySchemes:
+    bearer_auth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Bearer token authentication using JWT

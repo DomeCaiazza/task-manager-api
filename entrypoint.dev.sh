@@ -10,5 +10,7 @@ bundle install
 rails db:create
 rails db:migrate
 
+rake rswag:specs:swaggerize
+
 # Then exec the container's main process (what's set as CMD in the Dockerfile)
 exec "$@" 

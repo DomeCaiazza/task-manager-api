@@ -2,6 +2,7 @@
 require 'spec_helper'
 require 'devise'
 require 'devise/api'
+require 'factory_bot_rails'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
