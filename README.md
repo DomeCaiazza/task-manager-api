@@ -27,6 +27,8 @@ RAILS_MASTER_KEY="6d93e4e8e4ec7e2d1b4128651a19d619" # Master key per l'applicazi
 
 ### Installazione con Docker
 
+Al termine di questa procedura, l'applicazione sarà servita in locale al seguente link: http://localhost:3000
+
 1. Clona il repository:
 ```bash
 git clone git@github.com:DomeCaiazza/task-manager-api.git
@@ -61,7 +63,23 @@ Per eseguire i test:
 docker-compose exec web-dev bundle exec rspec
 ```
 
+## Documentazione
+
+La documentazione OpenAPI viene generata automaticamente durante l'avvio del container attraverso lo script di entrypoint. È possibile accedere alla documentazione interattiva all'indirizzo:
+
+```
+http://localhost:3000/api-docs/index.html
+```
+
+Questa documentazione fornisce una descrizione di tutti gli endpoint disponibili, inclusi i parametri richiesti, le risposte attese e gli esempi di utilizzo.
+
 ## Struttura dell'API
+
+### Postman
+Per testare l'utilizzo di questa applicazione importare nel proprio postman il file `task-manager-api.postman_collection.json`
+#### Autenticazione per le chiamate
+Nella collection "task-manager-api", è definita la variabile "token" che va popolata con il token di risposta, dopo l'autenticazione, della rotta `/users/tokens/sign_in`
+
 
 ### Endpoints Disponibili
 
