@@ -1,150 +1,157 @@
 # Task Manager API
 
-Un'API RESTful per la gestione dei task, sviluppata con Ruby on Rails, che consente a ciascun utente di gestire le proprie attività in modo autonomo.
+A RESTful API for task management, developed with Ruby on Rails, that allows each user to manage their activities independently.
 
-## Requisiti
+[Go to italian version](README.IT.md)
 
-- Docker e Docker Compose
+## Requirements
+
+- Docker and Docker Compose
 - Postman
 
-## Configurazione dell'Ambiente
+## Environment Setup
 
-### Variabili d'Ambiente
+### Environment Variables
 
-Nella root del progetto copia o sposta il file `.env_sample` in `.env`. Le variabili che contiene sono:
+In the project root, copy or move the `.env_sample` file to `.env`. The variables it contains are:
 
 ```env
-MYSQL_ROOT_PASSWORD=your_root_password # passowrd di root del database
-MYSQL_DATABASE_DEV=task_manager_dev # nome del database per l'ambiente di sviluppo
-MYSQL_DATABASE_TEST=task_manager_test # nome del database per l'ambiente di test
-MYSQL_USER=task_manager # nome dell'utente mysql
-MYSQL_PASSWORD=your_password # password dell'utente mysql
-MYSQL_HOST_DEV=db-dev # host per l'ambiente di sviluppo
-MYSQL_HOST_TEST=db-test # host per l'ambiente di test
-MYSQL_PORT=3306 # porta servizio database (nella rete docker)
-RAILS_MASTER_KEY="6d93e4e8e4ec7e2d1b4128651a19d619" # Master key per l'applicazione, questa è una chiave di esempio, genera una nuova chiave per ambienti non di test
+APPLICATION_NAME="task_manager"
+MYSQL_HOST_APP="db-app"
+MYSQL_HOST_TEST="db-test"
+
+MYSQL_USER="task_manager"
+MYSQL_PASSWORD="password"
+MYSQL_PORT="3306"
+MYSQL_ROOT_PASSWORD="password"
+
+RAILS_ENV="development"
+
+RAILS_MASTER_KEY="6d93e4e8e4ec7e2d1b4128651a19d619" ## this is an example, don't user it in production please see https://rubyonrails.org/docs
+SECRET_KEY_BASE="f2e4f2a4bd502d7a74342e95826cd37b72cca93b23bed1330d556bb0e63d0e506c2bbcb17d7f3a653339d93c37ecb2f4e2617b65772ee0e957b50a97d26224ff" ## this is an example, don't user it in production please see https://rubyonrails.org/docs
 ```
 
-### Installazione con Docker
+### Docker Installation
 
-Al termine di questa procedura, l'applicazione sarà servita in locale al seguente link: http://localhost:3000
+After this procedure, the application will be served locally at: http://localhost:3000
 
-1. Clona il repository:
+1. Clone the repository:
 ```bash
 git clone https://github.com/DomeCaiazza/task-manager-api.git
 cd task-manager-api
 ```
 
-2. Creare il file di variabili d'ambiente `.env` come mostrato sopra
+2. Create the `.env` environment variables file as shown above
 
-3. Avvia i container Docker:
+3. Start Docker containers:
 ```bash
 docker-compose up --build -d && docker-compose logs -tf
 ```
 
-4. (Opzionale) In un nuovo terminale, esegui le migrazioni del database:
-PS: la creazione e la migrazione del database viene eseguita automaticamente dal file "entrypoint.dev.sh"
+4. (Optional) In a new terminal, run database migrations:
+PS: database creation and migration is automatically performed by the "entrypoint.dev.sh" file
 ```bash
 docker-compose exec web-app bundle exec rails db:create db:migrate
 ```
 
-5. (Opzionale) Popola il database con dati di esempio:
+5. (Optional) Populate the database with sample data:
 ```bash
 docker-compose exec web-app bundle exec rails db:seed
 ```
 
-## Esecuzione dei Test
+## Running Tests
 
-I database di sviluppo e test sono separati, nel docker-compose vengono definiti due servizi distinti, il database di test è montato in RAM per migliorare le prestazioni.
+Development and test databases are separate, in docker-compose two distinct services are defined, the test database is mounted in RAM to improve performance.
 
-Per eseguire i test:
+To run the tests:
 
 ```bash
 docker-compose exec web-app bundle exec rspec
 ```
 
-## Documentazione
+## Documentation
 
-La documentazione OpenAPI viene generata automaticamente durante l'avvio del container attraverso lo script di entrypoint. È possibile accedere alla documentazione interattiva all'indirizzo:
+The OpenAPI documentation is automatically generated during container startup through the entrypoint script. You can access the interactive documentation at:
 
 ```
 http://localhost:3000/api-docs/index.html
 ```
 
-Questa documentazione fornisce una descrizione di tutti gli endpoint disponibili, inclusi i parametri richiesti, le risposte attese e gli esempi di utilizzo.
+This documentation provides a description of all available endpoints, including required parameters, expected responses, and usage examples.
 
-## Struttura dell'API
+## API Structure
 
 ### Postman
-Per testare l'utilizzo di questa applicazione importare nel proprio postman il file https://raw.githubusercontent.com/DomeCaiazza/task-manager-api/refs/heads/main/task-manager-api.postman_collection.json
+To test this application, import the file https://raw.githubusercontent.com/DomeCaiazza/task-manager-api/refs/heads/main/task-manager-api.postman_collection.json into your Postman
 
-#### Autenticazione per le chiamate
-Nella collection "task-manager-api", è definita la variabile "token" che va popolata con il token di risposta, dopo l'autenticazione, della rotta `/users/tokens/sign_in`
+The environment variables are defined within the collection.
 
+#### Authentication for API calls
+In the "task-manager-api" collection, the "token" variable is defined which should be populated with the response token after authentication from the `/users/tokens/sign_in` route
 
-### Endpoints Disponibili
+### Available Endpoints
 
-#### Autenticazione
+#### Authentication
 - POST `/users/tokens/sign_in` - Login
-- POST `/users/tokens/sign_up` - Registrazione
-- POST `/users/tokens/revoke` - Revoca token
-- GET `/users/tokens/info` - Info dell'utente
+- POST `/users/tokens/sign_up` - Registration
+- POST `/users/tokens/revoke` - Revoke token
+- GET `/users/tokens/info` - User info
 
 #### Tasks
-- GET `/api/v1/users/:user_id/tasks` - Lista dei task
-- GET `/api/v1/users/:user_id/tasks/:id` - Dettaglio di un task
-- POST `/api/v1/users/:user_id/tasks` - Creazione di un nuovo task
-- PUT/PATCH `/api/v1/users/:user_id/tasks/:id` - Aggiornamento di un task
-- DELETE `/api/v1/users/:user_id/tasks/:id` - Eliminazione di un task
+- GET `/api/v1/tasks` - List tasks
+- GET `/api/v1/tasks/:id` - Task details
+- POST `/api/v1/tasks` - Create a new task
+- PUT/PATCH `/api/v1/tasks/:id` - Update a task
+- DELETE `/api/v1/tasks/:id` - Delete a task
 
-### Parametri dei Task
+### Task Parameters
 - `title` (string, required)
 - `description` (text)
 - `completed` (boolean)
 
-### Filtri
-L'endoint per la lista dei task permette di filtrare i risultati per tutti i suoi parametri, i filtri disponibili sono:
-- completed_eq: il completameto è uguale a "true" o "false"
-- title_cont: il titolo contiene
-- description_cont: la descrizione contiene
-- title_or_description_cont: titolo o descrizione contiene
+### Filters
+The task list endpoint allows filtering results by all its parameters, available filters are:
+- completed_eq: completion equals "true" or "false"
+- title_cont: title contains
+- description_cont: description contains
+- title_or_description_cont: title or description contains
 
-## Sviluppo
+## Development
 
-### Struttura del Progetto
-- `app/controllers/api/v1/` - Controller API
-- `app/models/` - Modelli
-- `spec/` - Test RSpec
+### Project Structure
+- `app/controllers/api/v1/` - API Controllers
+- `app/models/` - Models
+- `spec/` - RSpec Tests
 
-### Comandi Utili
+### Useful Commands
 
-- Avviare il server:
+- Start the server:
 ```bash
 docker-compose up
 ```
 
-- Eseguire le migrazioni:
+- Run migrations:
 ```bash
 docker-compose exec web-app bundle exec rails db:migrate
 ```
 
-- Aprire la console Rails:
+- Open Rails console:
 ```bash
 docker-compose exec web-app bundle exec rails console
 ```
 
-- Controllare i log di docker compose in tempo reale:
+- Check docker compose logs in real-time:
 ```bash
 docker-compose logs -tf
 ```
 
-- Generare la documentazione open api (non funziona in ambiente di produzione)
+- Generate open api documentation (doesn't work in production environment)
 ```bash
 docker-compose exec web-app rake rswag:specs:swaggerize
 ```
 
-## Sicurezza
+## Security
 
-- L'API utilizza Devise API per l'autenticazione
-- Tutte le richieste API, tranne la registrazione e il login, richiedono autenticazione
-- Le password sono validate con un minimo di 6 caratteri
+- The API uses Devise API for authentication
+- All API requests, except registration and login, require authentication
+- Passwords are validated with a minimum of 6 characters 
