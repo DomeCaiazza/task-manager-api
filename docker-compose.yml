@@ -1,9 +1,9 @@
 services:
-  db-dev:
+  db-app:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE_DEV}
+      MYSQL_DATABASE: ${APPLICATION_NAME}_${RAILS_ENV}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_PORT: ${MYSQL_PORT}
@@ -14,7 +14,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
       interval: 15s
       timeout: 5s
       retries: 3
@@ -23,7 +23,7 @@ services:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE_TEST}
+      MYSQL_DATABASE: ${APPLICATION_NAME}_test
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_PORT: ${MYSQL_PORT}
@@ -34,15 +34,15 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
       interval: 15s
       timeout: 5s
       retries: 3
 
-  web-dev:
+  web-app:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - .:/app
@@ -50,16 +50,17 @@ services:
     ports:
       - "3000:3000"
     environment:
-      MYSQL_DATABASE_DEV: ${MYSQL_DATABASE_DEV}
-      MYSQL_HOST_DEV: ${MYSQL_HOST_DEV}
-      MYSQL_DATABASE_TEST: ${MYSQL_DATABASE_TEST}
+      APPLICATION_NAME: ${APPLICATION_NAME}
+      MYSQL_HOST_APP: ${MYSQL_HOST_APP}
       MYSQL_HOST_TEST: ${MYSQL_HOST_TEST}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_PORT: ${MYSQL_PORT}
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      RAILS_ENV: ${RAILS_ENV}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
     depends_on:
-      db-dev:
+      db-app:
         condition: service_healthy
       db-test:
         condition: service_healthy

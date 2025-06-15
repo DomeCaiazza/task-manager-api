@@ -24,9 +24,9 @@ RUN bundle install
 COPY . .
 
 # Add a script to be executed every time the container starts
-COPY entrypoint.dev.sh /usr/bin/
-RUN chmod +x /usr/bin/entrypoint.dev.sh
-ENTRYPOINT ["entrypoint.dev.sh"]
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
 
 # Start the main process
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"] 

@@ -31,7 +31,7 @@ Al termine di questa procedura, l'applicazione sarà servita in locale al seguen
 
 1. Clona il repository:
 ```bash
-git clone git@github.com:DomeCaiazza/task-manager-api.git
+git clone https://github.com/DomeCaiazza/task-manager-api.git
 cd task-manager-api
 ```
 
@@ -45,12 +45,12 @@ docker-compose up --build -d && docker-compose logs -tf
 4. (Opzionale) In un nuovo terminale, esegui le migrazioni del database:
 PS: la creazione e la migrazione del database viene eseguita automaticamente dal file "entrypoint.dev.sh"
 ```bash
-docker-compose exec web-dev bundle exec rails db:create db:migrate
+docker-compose exec web-app bundle exec rails db:create db:migrate
 ```
 
 5. (Opzionale) Popola il database con dati di esempio:
 ```bash
-docker-compose exec web-dev bundle exec rails db:seed
+docker-compose exec web-app bundle exec rails db:seed
 ```
 
 ## Esecuzione dei Test
@@ -60,7 +60,7 @@ I database di sviluppo e test sono separati, nel docker-compose vengono definiti
 Per eseguire i test:
 
 ```bash
-docker-compose exec web-dev bundle exec rspec
+docker-compose exec web-app bundle exec rspec
 ```
 
 ## Documentazione
@@ -125,12 +125,12 @@ docker-compose up
 
 - Eseguire le migrazioni:
 ```bash
-docker-compose exec web-dev bundle exec rails db:migrate
+docker-compose exec web-app bundle exec rails db:migrate
 ```
 
 - Aprire la console Rails:
 ```bash
-docker-compose exec web-dev bundle exec rails console
+docker-compose exec web-app bundle exec rails console
 ```
 
 - Controllare i log di docker compose in tempo reale:
@@ -138,9 +138,9 @@ docker-compose exec web-dev bundle exec rails console
 docker-compose logs -tf
 ```
 
-- Generare la documentazione open api
+- Generare la documentazione open api (non funziona in ambiente di produzione)
 ```bash
-docker-compose exec web-dev rake rswag:specs:swaggerize
+docker-compose exec web-app rake rswag:specs:swaggerize
 ```
 
 ## Sicurezza
