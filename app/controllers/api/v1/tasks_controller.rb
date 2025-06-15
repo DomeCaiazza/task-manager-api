@@ -54,6 +54,8 @@ module Api
 
         def set_task
             @task = @user.tasks.find(params[:id])
+        rescue ActiveRecord::RecordNotFound
+            render json: { error: "Task not found" }, status: :not_found
         end
 
         def task_params

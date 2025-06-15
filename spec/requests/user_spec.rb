@@ -1,3 +1,4 @@
+require 'swagger_helper'
 RSpec.describe 'User Authentication API', type: :request do
   path '/users/tokens/sign_up' do
     post 'Register a new user' do

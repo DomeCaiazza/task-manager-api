@@ -3,6 +3,7 @@ require 'spec_helper'
 require 'devise'
 require 'devise/api'
 require 'factory_bot_rails'
+require 'faker'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
@@ -41,6 +42,9 @@ end
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
+
+  # Exclude Rswag specs by default unless explicitly included
+  config.filter_run_excluding rswag: true unless ENV['RUN_RSWAG']
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [

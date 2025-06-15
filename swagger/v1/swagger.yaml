@@ -250,10 +250,3 @@ paths:
                     updated_at: '2024-03-20T10:00:00Z'
         '401':
           description: Unauthorized
-components:
-  securitySchemes:
-    bearer_auth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: Bearer token authentication using JWT

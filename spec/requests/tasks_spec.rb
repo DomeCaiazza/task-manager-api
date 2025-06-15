@@ -1,4 +1,5 @@
-RSpec.describe 'Task manager API', type: :request do
+require 'swagger_helper'
+RSpec.describe 'Task manager API', type: :request, rswag: true do
   # All endpoints require Bearer token authentication
   # If no valid token is provided, a 401 Unauthorized response will be returned
   # Format: Authorization: Bearer <token>
@@ -20,6 +21,12 @@ RSpec.describe 'Task manager API', type: :request do
         let(:user) { create(:user) }
         let(:Authorization) { "Bearer #{user.generate_new_token}" }
         let(:tasks) { create_list(:task, 3, user: user) }
+        let(:page) { 1 }
+        let(:per_page) { 10 }
+        let(:'q[title_cont]') { nil }
+        let(:'q[description_cont]') { nil }
+        let(:'q[title_or_description_cont]') { nil }
+        let(:'q[completed_eq]') { nil }
 
         before { tasks }
 
